@@ -53,24 +53,32 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Manga ID: %s, Cover Art Link: %s\n", manga.Id, manga.CoverArtLink)
 		fmt.Println("--------------------------------------------------------------------------------------")
 	}
-
-	renderTemplate(w, "index", nil)
+	// Create instances of Manga struct for each list
+	recentlyUpdatedManga := Manga{Mangas: recentlyUpdated.Mangas}
+	recommendedManga := Manga{Mangas: recommended.Mangas}
+	popularManga := Manga{Mangas: popular.Mangas}
+	data := map[string]interface{}{
+		"RecentlyUpdated": recentlyUpdatedManga,
+		"Recommended":     recommendedManga,
+		"Popular":         popularManga,
+	}
+	renderTemplate(w, "index", data)
 }
 
 func ByTagHandler(w http.ResponseWriter, r *http.Request) {
-	// affcher par derniere update
+	// affcher par derniere update avec le / les tag donner en query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 	renderTemplate(w, "bytag", nil)
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	// affcher par pertinance
+	// affcher par pertinance via query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 	renderTemplate(w, "search", nil)
 }
 
 func SelectHandler(w http.ResponseWriter, r *http.Request) {
-	// affcher toute les data et lien vers chapitre
+	// affcher toute les data et lien vers chapitre via query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 	renderTemplate(w, "select", nil)
 }
