@@ -11,38 +11,48 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 const mangadexAPIURL = "https://api.mangadex.org"
-const mangadexCoverURL = "https://uploads.mangadex.org/covers"
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// afficher les recently updated up to 10
-	// afficher les recommanded up 26
-	// afficher les plus populaire up to 10
+	// afficher les recently updated (latestUploadedChapter) up to 10
+	// afficher les recommanded (rating) up 15
+	// afficher les plus populaire (followedCount) up to 10
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 
 	// Fetch recently updated manga (up to 10)
-	recentlyUpdated, err := getMangaList("/manga?order[updatedAt]=desc&limit=10")
+	recentlyUpdated, err := getMangaList("/manga?order[latestUploadedChapter]=desc&limit=10&availableTranslatedLanguage[]=en")
 	if err != nil {
 		log.Printf("Error fetching recently updated manga: %v", err)
 		return
 	}
-
-	if len(recentlyUpdated.Mangas) == 0 {
-		fmt.Println("No recently updated manga.")
-	} else {
-		fmt.Println(recentlyUpdated)
+	updateCoverArtLinks(recentlyUpdated)
+	for _, manga := range recentlyUpdated.Mangas {
+		fmt.Println("rencent")
+		fmt.Printf("Manga ID: %s, Cover Art Link: %s\n", manga.Id, manga.CoverArtLink)
+		fmt.Println("--------------------------------------------------------------------------------------")
 	}
-	// // Fetch recommended manga (up to 26)
-	// recommended, err := getMangaList("/manga?limit=26")
-	// if err != nil {
-	// 	log.Println("Error fetching recommended manga:", err)
-	// }
-	// fmt.Println(recommended)
-	// // Fetch popular manga (up to 10)
-	// popular, err := getMangaList("/manga?order[views]=desc&limit=10")
-	// if err != nil {
-	// 	log.Println("Error fetching popular manga:", err)
-	// }
-	// fmt.Println(popular)
+
+	// Fetch recommended manga (up to 26)
+	recommended, err := getMangaList("/manga?order[rating]=desc&limit=15")
+	if err != nil {
+		log.Println("Error fetching recommended manga:", err)
+	}
+	updateCoverArtLinks(recommended)
+	for _, manga := range recommended.Mangas {
+		fmt.Println("recomended")
+		fmt.Printf("Manga ID: %s, Cover Art Link: %s\n", manga.Id, manga.CoverArtLink)
+		fmt.Println("--------------------------------------------------------------------------------------")
+	}
+	// Fetch popular manga (up to 10)
+	popular, err := getMangaList("/manga?order[followedCount]=desc&limit=10")
+	if err != nil {
+		log.Println("Error fetching popular manga:", err)
+	}
+	updateCoverArtLinks(popular)
+	for _, manga := range popular.Mangas {
+		fmt.Println("popular")
+		fmt.Printf("Manga ID: %s, Cover Art Link: %s\n", manga.Id, manga.CoverArtLink)
+		fmt.Println("--------------------------------------------------------------------------------------")
+	}
 
 	renderTemplate(w, "index", nil)
 }

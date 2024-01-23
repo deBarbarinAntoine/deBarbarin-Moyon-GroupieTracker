@@ -96,9 +96,10 @@ type ListMangaResult struct {
 
 type Manga struct {
 	Mangas []struct {
-		Id         string `json:"id"`
-		Type       string `json:"type"`
-		Attributes struct {
+		Id           string `json:"id"`
+		Type         string `json:"type"`
+		CoverArtLink string `json:"coverArtLink,omitempty"`
+		Attributes   struct {
 			Title struct {
 				En string `json:"en"`
 			} `json:"title"`
@@ -132,13 +133,11 @@ type Manga struct {
 					Description struct {
 					} `json:"description"`
 				} `json:"attributes"`
-				Relationships []interface{} `json:"relationships"`
 			} `json:"tags"`
 			State                          string    `json:"state"`
 			ChapterNumbersResetOnNewVolume bool      `json:"chapterNumbersResetOnNewVolume"`
 			CreatedAt                      time.Time `json:"createdAt"`
 			UpdatedAt                      time.Time `json:"updatedAt"`
-			Version                        int       `json:"version"`
 			AvailableTranslatedLanguages   []string  `json:"availableTranslatedLanguages"`
 			LatestUploadedChapter          string    `json:"latestUploadedChapter"`
 		} `json:"attributes"`
@@ -147,5 +146,37 @@ type Manga struct {
 			Type    string `json:"type"`
 			Related string `json:"related,omitempty"`
 		} `json:"relationships"`
-	}
+	} `json:"data"`
+}
+
+// CoverArt represents the structure of the JSON data
+type CoverArt struct {
+	Result   string       `json:"result"`
+	Response string       `json:"response"`
+	Data     CoverArtData `json:"data"`
+}
+
+// CoverArtData represents the data field in the JSON
+type CoverArtData struct {
+	ID            string                 `json:"id"`
+	Type          string                 `json:"type"`
+	Attributes    CoverArtAttributes     `json:"attributes"`
+	Relationships []CoverArtRelationship `json:"relationships"`
+}
+
+// CoverArtAttributes represents the attributes field in the JSON
+type CoverArtAttributes struct {
+	Description string    `json:"description"`
+	Volume      string    `json:"volume"`
+	FileName    string    `json:"fileName"`
+	Locale      string    `json:"locale"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Version     int       `json:"version"`
+}
+
+// CoverArtRelationship represents the relationship field in the JSON
+type CoverArtRelationship struct {
+	ID   string `json:"id"`
+	Type string `json:"type"`
 }
