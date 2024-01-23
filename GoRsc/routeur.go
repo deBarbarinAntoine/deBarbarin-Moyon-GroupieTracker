@@ -18,8 +18,9 @@ func RUN() {
 	// used same system than hangman, since it was working prety well
 	http.HandleFunc("/", ErrorHandler)
 	http.HandleFunc("/home", HomeHandler)
+	http.HandleFunc("/select", SelectHandler)
 
-	// Serve static files from the "??" directory
+	// Serve static files from the "assets" directory
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(path+"assets"))))
 
 	// Print statement indicating server is running << same

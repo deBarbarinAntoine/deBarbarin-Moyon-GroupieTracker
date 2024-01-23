@@ -13,7 +13,8 @@
     <ul>
         {{range .RecentlyUpdated.Mangas}}
         <li>
-            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}
+            <a href="/select?id={{.Id}}">
+            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}</a>
 
         </li>
         {{end}}
@@ -23,7 +24,8 @@
     <ul>
         {{range .Recommended.Mangas}}
         <li>
-            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}
+            <a href="/select?id={{.Id}}">
+            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}</a>
 
         </li>
         {{end}}
@@ -33,7 +35,8 @@
     <ul>
         {{range .Popular.Mangas}}
         <li>
-            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}
+            <a href="/select?id={{.Id}}">
+            {{.Attributes.Title.En}} - {{.Attributes.LatestUploadedChapter}}</a>
 
         </li>
         {{end}}

@@ -80,5 +80,17 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 func SelectHandler(w http.ResponseWriter, r *http.Request) {
 	// affcher toute les data et lien vers chapitre via query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
-	renderTemplate(w, "select", nil)
+
+	// Get the value of the "id" parameter
+	id := r.URL.Query().Get("id")
+	Select, err := getMangaList("/manga/" + id)
+	if err != nil {
+		log.Printf("Error fetching recently updated manga: %v", err)
+		return
+	}
+
+	updateCoverArtLinks(Select)
+	SelectedManga := Manga{Mangas: Select.Mangas}
+
+	renderTemplate(w, "select", SelectedManga)
 }
