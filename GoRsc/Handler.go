@@ -19,7 +19,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 
 	// Fetch recently updated manga (up to 10)
-	recentlyUpdated, err := getMangaList("/manga?order[latestUploadedChapter]=desc&limit=10&availableTranslatedLanguage[]=en")
+	recentlyUpdated, err := getMangaList("/manga?order[latestUploadedChapter]=desc&limit=10&availableTranslatedLanguage[]=en&contentRating[]=safe")
 	if err != nil {
 		log.Printf("Error fetching recently updated manga: %v", err)
 		return
@@ -32,7 +32,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch recommended manga (up to 26)
-	recommended, err := getMangaList("/manga?order[rating]=desc&limit=15")
+	recommended, err := getMangaList("/manga?order[rating]=desc&limit=15&contentRating[]=safe")
 	if err != nil {
 		log.Println("Error fetching recommended manga:", err)
 	}
@@ -43,7 +43,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("--------------------------------------------------------------------------------------")
 	}
 	// Fetch popular manga (up to 10)
-	popular, err := getMangaList("/manga?order[followedCount]=desc&limit=10")
+	popular, err := getMangaList("/manga?order[followedCount]=desc&limit=10&contentRating[]=safe")
 	if err != nil {
 		log.Println("Error fetching popular manga:", err)
 	}
@@ -74,7 +74,37 @@ func ByTagHandler(w http.ResponseWriter, r *http.Request) {
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	// affcher par pertinance via query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
-	renderTemplate(w, "search", nil)
+	r.ParseForm()
+	var includedTags []string
+	var excludedTags []string
+	var status []string
+	var availableTranslatedLanguage []string
+	var publicationDemographic []string
+	var ids []string
+	title := r.FormValue("title")
+	authorOrArtist := r.FormValue("authorOrArtist")
+	year := r.FormValue("year")
+	order := r.FormValue("order")
+	orderEnum := r.FormValue("orderEnum")
+
+	selectedTags := r.Form["includedTags"]
+	notSelectedTags := r.Form["excludedTags"]
+	statusTags := r.Form["status"]
+	availableTranslatedLanguageTags := r.Form["availableTranslatedLanguage"]
+	publicationDemographicTags := r.Form["publicationDemographic"]
+	idsTags := r.Form["ids"]
+
+	includedTags = append(includedTags, selectedTags...)
+	excludedTags = append(notSelectedTags, excludedTags...)
+	status = append(statusTags, status...)
+	availableTranslatedLanguage = append(availableTranslatedLanguageTags, availableTranslatedLanguage...)
+	publicationDemographic = append(publicationDemographicTags, publicationDemographic...)
+	ids = append(idsTags, ids...)
+
+	dataUrl := buildMangaDEXQuery(title, authorOrArtist, year, order, orderEnum, includedTags, excludedTags, status, availableTranslatedLanguage, publicationDemographic, ids)
+	data := getDataFromSeach(dataUrl)
+	updateCoverArtLinks(data)
+	renderTemplate(w, "search", data)
 }
 
 func SelectHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,72 @@
+{{define "search"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+<h2>MangaDEX Search Form</h2>
+
+<form action="/search" method="get">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title"><br>
+
+    <label for="authorOrArtist">Author/Artist:</label>
+    <input type="text" id="authorOrArtist" name="authorOrArtist"><br>
+
+    <label for="year">Year:</label>
+    <input type="text" id="year" name="year" placeholder="YYYY" minlength="4" maxlength="4"><br>
+
+    <label for="order">Order:</label>
+    <select id="order" name="order">
+        <option value="title">Title</option>
+        <option value="year">Year</option>
+        <!-- Add other options -->
+    </select><br>
+
+    <label for="orderEnum">Order Enum:</label>
+    <select id="orderEnum" name="orderEnum">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select><br>
+
+    <fieldset>
+        <legend>Included Tags:</legend>
+        <input type="checkbox" id="tag1" name="includedTags" value="tag1">
+        <label for="tag1">Tag 1</label><br>
+        <input type="checkbox" id="tag2" name="includedTags" value="tag2">
+        <label for="tag2">Tag 2</label><br>
+        <!-- Add more checkboxes for other tags -->
+    </fieldset>
+
+    <fieldset>
+        <legend>Excluded Tags:</legend>
+        <input type="checkbox" id="excludedTag1" name="excludedTags" value="excludedTag1">
+        <label for="excludedTag1">Excluded Tag 1</label><br>
+        <input type="checkbox" id="excludedTag2" name="excludedTags" value="excludedTag2">
+        <label for="excludedTag2">Excluded Tag 2</label><br>
+        <!-- Add more checkboxes for other excluded tags -->
+    </fieldset>
+
+    <fieldset>
+        <legend>Status:</legend>
+        <input type="checkbox" id="status1" name="status" value="status1">
+        <label for="status1">Status 1</label><br>
+        <input type="checkbox" id="status2" name="status" value="status2">
+        <label for="status2">Status 2</label><br>
+        <!-- Add more checkboxes for other status options -->
+    </fieldset>
+
+    <!-- Repeat similar fieldsets for other parameters like availableTranslatedLanguage, publicationDemographic, and ids -->
+
+    <input type="submit" value="Search">
+</form>
+
+</body>
+
+</html>
+{{end}}

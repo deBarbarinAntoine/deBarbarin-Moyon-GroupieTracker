@@ -180,3 +180,26 @@ type CoverArtRelationship struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
 }
+
+// Attributes struct to represent the attributes field in the JSON
+type Attributes struct {
+	Name        map[string]string `json:"name"`
+	Description map[string]string `json:"description"`
+	Group       string            `json:"group"`
+	Version     int               `json:"version"`
+}
+
+// DataItem struct to represent each item in the "data" array
+type DataItem struct {
+	ID            string     `json:"id"`
+	Type          string     `json:"type"`
+	Attributes    Attributes `json:"attributes"`
+	Relationships []struct{} `json:"relationships"`
+}
+
+// YourResponse struct to represent the entire JSON response
+type YourResponse struct {
+	Result   string     `json:"result"`
+	Response string     `json:"response"`
+	Data     []DataItem `json:"data"`
+}
