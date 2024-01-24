@@ -9,6 +9,9 @@
 </head>
 
 <body>
+    <form action="/search">
+        <input type="submit" name="title" id="searchBar">
+    </form>
     <h1>Recently Updated Manga</h1>
     <ul>
         {{range .RecentlyUpdated.Mangas}}
