@@ -90,16 +90,17 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	selectedTags := r.Form["includedTags"]
 	notSelectedTags := r.Form["excludedTags"]
 	statusTags := r.Form["status"]
-	availableTranslatedLanguageTags := r.Form["availableTranslatedLanguage"]
+	availableTranslatedLanguageTags := []string{"en"}
+	// r.Form["availableTranslatedLanguage"] set as en for now
 	publicationDemographicTags := r.Form["publicationDemographic"]
 	idsTags := r.Form["ids"]
 
 	includedTags = append(includedTags, selectedTags...)
 	excludedTags = append(notSelectedTags, excludedTags...)
-	status = append(statusTags, status...)
-	availableTranslatedLanguage = append(availableTranslatedLanguageTags, availableTranslatedLanguage...)
-	publicationDemographic = append(publicationDemographicTags, publicationDemographic...)
-	ids = append(idsTags, ids...)
+	status = append(status, statusTags...)
+	availableTranslatedLanguage = append(availableTranslatedLanguage, availableTranslatedLanguageTags...)
+	publicationDemographic = append(publicationDemographic, publicationDemographicTags...)
+	ids = append(ids, idsTags...)
 
 	dataUrl := buildMangaDEXQuery(title, authorOrArtist, year, order, orderEnum, includedTags, excludedTags, status, availableTranslatedLanguage, publicationDemographic, ids)
 	data := getDataFromSeach(dataUrl)
@@ -108,19 +109,41 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SelectHandler(w http.ResponseWriter, r *http.Request) {
-	// affcher toute les data et lien vers chapitre via query
+	// affcher toute les data et lien  du manga via id query
 	// image link https://uploads.mangadex.org/covers/:manga-id/:cover-filename
 
 	// Get the value of the "id" parameter
 	id := r.URL.Query().Get("id")
 	Select, err := getMangaList("/manga/" + id)
 	if err != nil {
-		log.Printf("Error fetching recently updated manga: %v", err)
+		log.Printf("Error fetching selected manga: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	SelectChapter, err := getChaptersById(id)
+	if err != nil {
+		log.Printf("Error fetching selected manga chapters: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	updateCoverArtLinks(Select)
-	SelectedManga := Manga{Mangas: Select.Mangas}
 
-	renderTemplate(w, "select", SelectedManga)
+	CombinedData := struct {
+		Manga    Manga
+		Chapters Response
+	}{
+		Manga:    Manga{Mangas: Select.Mangas},
+		Chapters: SelectChapter,
+	}
+
+	renderTemplate(w, "manga", CombinedData)
+}
+func ChapterHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	data := getChapterImageById(id)
+
+	renderTemplate(w, "chapter", data)
 }

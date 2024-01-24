@@ -270,3 +270,91 @@ func buildMangaDEXQuery(title, authorOrArtist, year, order, orderEnum string, in
 
 	return fullURL
 }
+
+func getChaptersById(id string) (Response, error) {
+	url := "https://api.mangadex.org/manga/" + id
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return Response{}, fmt.Errorf("failed to make GET request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check HTTP status code
+	if resp.StatusCode != http.StatusOK {
+		return Response{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Response{}, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	// Decode the JSON response into a struct
+	var data Response
+	if err := json.Unmarshal(body, &data); err != nil {
+		return Response{}, fmt.Errorf("failed to decode JSON: %v", err)
+	}
+
+	fmt.Println("data sent")
+	return data, nil
+}
+
+func getChapterById(id string) (Response, error) {
+	url := "https://api.mangadex.org/chapter/" + id
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return Response{}, fmt.Errorf("failed to make GET request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check HTTP status code
+	if resp.StatusCode != http.StatusOK {
+		return Response{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Response{}, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	// Decode the JSON response into a struct
+	var data Response
+	if err := json.Unmarshal(body, &data); err != nil {
+		return Response{}, fmt.Errorf("failed to decode JSON: %v", err)
+	}
+
+	fmt.Println("data sent")
+	return data, nil
+}
+
+func getChapterImageById(id string) ([]string, error) {
+	url := "https://api.mangadex.org/at-home/server/" + id
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make GET request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check HTTP status code
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	// Decode the JSON response into a struct
+	var data MangaChapterResponse
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, fmt.Errorf("failed to decode JSON: %v", err)
+	}
+	imageUrl := MangaChapterResponse.BaseURL
+}

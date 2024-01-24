@@ -20,6 +20,7 @@ func RUN() {
 	http.HandleFunc("/home", HomeHandler)
 	http.HandleFunc("/select", SelectHandler)
 	http.HandleFunc("/search", SearchHandler)
+	http.HandleFunc("/chapter", ChapterHandler)
 
 	// Serve static files from the "assets" directory
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(path+"assets"))))

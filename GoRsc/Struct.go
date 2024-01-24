@@ -203,3 +203,53 @@ type YourResponse struct {
 	Response string     `json:"response"`
 	Data     []DataItem `json:"data"`
 }
+
+// structs for chapters handling
+type Attributes1 struct {
+	Volume             string    `json:"volume"`
+	Chapter            string    `json:"chapter"`
+	Title              string    `json:"title"`
+	TranslatedLanguage string    `json:"translatedLanguage"`
+	ExternalURL        *string   `json:"externalUrl"`
+	PublishAt          time.Time `json:"publishAt"`
+	ReadableAt         time.Time `json:"readableAt"`
+	CreatedAt          time.Time `json:"createdAt"`
+	UpdatedAt          time.Time `json:"updatedAt"`
+	Pages              int       `json:"pages"`
+	Version            int       `json:"version"`
+}
+
+// structs for chapters handling
+type Relationship struct {
+	ID   string `json:"id"`
+	Type string `json:"type"`
+}
+
+// structs for chapters handling
+type Data struct {
+	ID            string         `json:"id"`
+	Type          string         `json:"type"`
+	Attributes    Attributes1    `json:"attributes"`
+	Relationships []Relationship `json:"relationships"`
+}
+
+// structs for chapters handling
+type Response struct {
+	Result   string `json:"result"`
+	Response string `json:"response"`
+	Data     []Data `json:"data"`
+}
+
+// Define a structure for the chapter data
+type MangaChapter struct {
+	Hash      string   `json:"hash"`
+	Data      []string `json:"data"`
+	DataSaver []string `json:"dataSaver"`
+}
+
+// Define a structure for the overall response
+type MangaChapterResponse struct {
+	Result  string       `json:"result"`
+	BaseURL string       `json:"baseUrl"`
+	Chapter MangaChapter `json:"chapter"`
+}
